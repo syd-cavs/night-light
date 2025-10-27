@@ -1,0 +1,101 @@
+[gd_scene load_steps=6 format=3 uid="uid://mablr5fnsgyn"]
+
+[ext_resource type="Script" uid="uid://bjlhvvn3kt5q5" path="res://scripts/main.gd" id="1_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://uor0h13xm4fc" path="res://scenes/world.tscn" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://ksvwh122j0x0" path="res://scenes/player.tscn" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://ckw5a8aprjo0n" path="res://scenes/ghost.tscn" id="3_jyhfs"]
+
+[sub_resource type="GDScript" id="GDScript_jyhfs"]
+script/source = "extends Node2D
+
+@export var chunk_size : int = 64
+@export var render_distance : int = 2
+@export var player_path : NodePath
+@export var noise : FastNoiseLite
+@export var tile_set : TileSet
+
+var player : Node2D
+var loaded_chunks = {}
+
+func _ready():
+	if player_path:
+		player = get_node(player_path)
+		print(\"Found player:\", player)
+	else:
+		player = get_parent().get_node(\"Player\")
+		print(\"Auto-found player:\", player)
+		
+	randomize()
+	if noise == null:
+		noise = FastNoiseLite.new()
+		noise.seed = randi()
+		noise.frequency = 0.05
+		noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+
+func _process(delta):
+	if not player:
+		return
+	
+	var player_chunk = world_to_chunk(player.global_position)
+	update_loaded_chunks(player_chunk)
+	
+func world_to_chunk(pos: Vector2) -> Vector2i:
+	return Vector2i(floor(pos.x / (chunk_size * 32)), floor(pos.y / (chunk_size * 32)))
+	
+func update_loaded_chunks(center_chunk: Vector2i):
+	var chunks_to_keep = {}
+	
+	for x in range(center_chunk.x - render_distance, center_chunk.x + render_distance + 1):
+		for y in range(center_chunk.y - render_distance, center_chunk.y + render_distance + 1):
+			var chunk_pos = Vector2i(x, y)
+			if not loaded_chunks.has(chunk_pos):
+				var chunk = generate_chunk(chunk_pos)
+				loaded_chunks[chunk_pos] = chunk
+				add_child(chunk)
+			chunks_to_keep[chunk_pos] = true
+
+	# Unload chunks that are far away
+	for chunk_pos in loaded_chunks.keys():
+		if not chunks_to_keep.has(chunk_pos):
+			var chunk = loaded_chunks[chunk_pos]
+			if is_instance_valid(chunk):
+				chunk.queue_free()
+			loaded_chunks.erase(chunk_pos)
+
+func generate_chunk(chunk_pos: Vector2i) -> Node2D:
+	var chunk = Node2D.new()
+	var tile_size = tile_set.tile_get_size(0)
+	chunk.position = chunk_pos * chunk_size * tile_size 
+
+	var tilemap = TileMap.new()
+	tilemap.tile_set = tile_set
+	chunk.add_child(tilemap)
+	
+	var tile_id = 0  
+
+	for x in range(chunk_size):
+		for y in range(chunk_size):
+			tilemap.set_cell(0, Vector2i(x, y), tile_id, Vector2i(0, 0), tile_id)
+			print(\"Placing tile at:\", Vector2i(x, y), \"Source ID 0\")
+	return chunk
+	
+"
+
+[node name="Main" type="Node"]
+script = ExtResource("1_jyhfs")
+
+[node name="world" parent="." instance=ExtResource("1_o5qli")]
+script = SubResource("GDScript_jyhfs")
+
+[node name="Player" parent="." instance=ExtResource("2_sugp2")]
+position = Vector2(-1, 0)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+limit_enabled = false
+
+[node name="Ghost" parent="." instance=ExtResource("3_jyhfs")]
+position = Vector2(102, 476)
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+energy = 0.7
+blend_mode = 1

@@ -1,0 +1,70 @@
+[gd_scene load_steps=11 format=3 uid="uid://cyeyualhkebdw"]
+
+[ext_resource type="Texture2D" uid="uid://dw06c4llmjl2" path="res://assets/candle.png" id="1_ctofe"]
+[ext_resource type="Script" uid="uid://u2v7mluooro6" path="res://scripts/candle.gd" id="1_ybelu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ybelu"]
+atlas = ExtResource("1_ctofe")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j6qyb"]
+atlas = ExtResource("1_ctofe")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ije2b"]
+atlas = ExtResource("1_ctofe")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mepm3"]
+atlas = ExtResource("1_ctofe")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u0j7c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ybelu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j6qyb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ije2b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mepm3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rpk0i"]
+size = Vector2(9, 21)
+
+[sub_resource type="Gradient" id="Gradient_ctofe"]
+offsets = PackedFloat32Array(0.36312848, 0.7150838)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ybelu"]
+gradient = SubResource("Gradient_ctofe")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="Candle" type="CharacterBody2D" groups=["Candle"]]
+scale = Vector2(2, 2)
+collision_layer = 4
+script = ExtResource("1_ybelu")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_u0j7c")
+frame_progress = 0.33309245
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -3.5)
+shape = SubResource("RectangleShape2D_rpk0i")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(1, 0.78723633, 0.6070852, 1)
+texture = SubResource("GradientTexture2D_ybelu")

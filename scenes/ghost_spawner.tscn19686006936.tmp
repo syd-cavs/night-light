@@ -1,0 +1,28 @@
+[gd_scene load_steps=7 format=3 uid="uid://cr66x2kmahgm4"]
+
+[ext_resource type="Script" uid="uid://dklroq28uy3xa" path="res://scripts/ghost_spawner.gd" id="1_m7dyn"]
+[ext_resource type="Script" uid="uid://bk185ig7lrt8" path="res://scripts/spawn_info.gd" id="2_ui35s"]
+[ext_resource type="PackedScene" uid="uid://ckw5a8aprjo0n" path="res://scenes/ghost.tscn" id="3_cocw7"]
+[ext_resource type="PackedScene" uid="uid://cyeyualhkebdw" path="res://scenes/candle.tscn" id="3_x420f"]
+[ext_resource type="PackedScene" uid="uid://bv51td8hw87we" path="res://scenes/tree_stump.tscn" id="5_5ka0g"]
+
+[sub_resource type="Resource" id="Resource_cocw7"]
+script = ExtResource("2_ui35s")
+time_start = 1
+time_end = 60
+ghost = ExtResource("3_cocw7")
+ghost_num = 1
+ghost_spawn_delay = 3
+candle = ExtResource("3_x420f")
+candle_spawn_delay = 1
+candle_num = 2
+stump = ExtResource("5_5ka0g")
+stump_spawn_delay = 4
+stump_num = 1
+metadata/_custom_type_script = "uid://bk185ig7lrt8"
+
+[node name="Spawner" type="Node2D"]
+script = ExtResource("1_m7dyn")
+spawns = Array[ExtResource("2_ui35s")]([SubResource("Resource_cocw7")])
+
+[node name="Timer" type="Timer" parent="."]

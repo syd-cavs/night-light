@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3 uid="uid://mablr5fnsgyn"]
+
+[ext_resource type="Script" uid="uid://bjlhvvn3kt5q5" path="res://scripts/main.gd" id="1_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://uor0h13xm4fc" path="res://scenes/world.tscn" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://ksvwh122j0x0" path="res://scenes/player.tscn" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://ckw5a8aprjo0n" path="res://scenes/ghost.tscn" id="3_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://d2crw7ecij2ur" path="res://scenes/spawner.tscn" id="6_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://cyeyualhkebdw" path="res://scenes/candle.tscn" id="6_tefeu"]
+[ext_resource type="PackedScene" uid="uid://dkvt7htbcki10" path="res://scenes/game_over.tscn" id="7_tipki"]
+[ext_resource type="PackedScene" uid="uid://lkmuil1yyo02" path="res://scenes/hud.tscn" id="8_85g3d"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_jyhfs")
+
+[node name="world" parent="." instance=ExtResource("1_o5qli")]
+
+[node name="Player" parent="." instance=ExtResource("2_sugp2")]
+position = Vector2(-1, 0)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+limit_enabled = false
+
+[node name="Ghost" parent="." instance=ExtResource("3_jyhfs")]
+position = Vector2(546, 507)
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+color = Color(0.81503975, 0.7060484, 0.31582162, 1)
+energy = 0.7
+blend_mode = 1
+height = 0.3
+
+[node name="Candle" parent="." instance=ExtResource("6_tefeu")]
+position = Vector2(179, 185)
+
+[node name="Spawner" parent="." instance=ExtResource("6_o6xl0")]
+
+[node name="GameOver" parent="." instance=ExtResource("7_tipki")]
+process_mode = 2
+
+[node name="HUD" parent="." instance=ExtResource("8_85g3d")]
